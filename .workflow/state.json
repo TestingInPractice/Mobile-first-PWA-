@@ -1,0 +1,9 @@
+{
+  "phase": "task_cycle",
+  "status": "in_progress",
+  "current_phase_id": "p4",
+  "subphase": null,
+  "questions": [],
+  "prompt": "Mobile-first PWA для opencode планирования с валидацией CodeAI Build Loop",
+  "commands": []
+}

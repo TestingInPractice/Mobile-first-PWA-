@@ -1,77 +1,72 @@
 {
-  "$schema": "phases-schema.json",
-  "meta": {
-    "project": "Mobile-first-PWA",
-    "version": "0.1.0",
-    "loop_version": "1.0.0",
-    "updated": "2026-06-12T14:00:00Z",
-    "orchestrator": "CodeAI Build Loop v1"
-  },
   "phases": [
     {
-      "id": "phase-001",
-      "title": "PWA Skeleton & Manifest",
+      "id": "p1",
+      "name": "PWA Skeleton & Manifest",
+      "description": "Service Worker, manifest.json, iOS meta tags, icons, offline fallback, responsive CSS framework",
       "status": "completed",
-      "description": "Service worker, manifest.json, offline fallback, iOS meta tags",
-      "spec": "specs/SPEC-001-pwa-skeleton.md",
-      "acceptance_criteria": "specs/AC-001-pwa-skeleton.md",
-      "contracts": [
-        "specs/CONTRACT-sw-interface.md",
-        "specs/CONTRACT-manifest-props.md"
+      "depends_on": [],
+      "acceptance_criteria": [
+        "AC-008: PWA устанавливается на Home Screen (iOS)",
+        "AC-009: Service Worker кэширует статику и работает offline"
       ]
     },
     {
-      "id": "phase-002",
-      "title": "Chat Interface (Planning Mode)",
+      "id": "p2",
+      "name": "Chat Interface",
+      "description": "Text input, message history display, command parser (/decompose, /exec, /status, /help), prompt/response loop",
       "status": "completed",
-      "description": "Text chat UI, command parser, prompt/response loop for planning",
-      "spec": "specs/SPEC-002-chat.md",
-      "acceptance_criteria": "specs/AC-002-chat.md",
-      "contracts": [
-        "specs/CONTRACT-chat-commands.md"
+      "depends_on": ["p1"],
+      "acceptance_criteria": [
+        "AC-001: Чат принимает prompt и отвечает в режиме планирования",
+        "AC-002: Команда /decompose генерирует 4 подзадачи",
+        "AC-004: Команда /status показывает все фазы и их статусы",
+        "AC-011: Команда /decompose отражает scope и границы задачи"
       ]
     },
     {
-      "id": "phase-003",
-      "title": "GitHub REST API v3 Integration",
+      "id": "p3",
+      "name": "GitHub REST API v3 Integration",
+      "description": "Auth via PAT, GET/PUT file contents, create Issues, search Issues, update phases.json",
       "status": "completed",
-      "description": "Auth via PAT, create .md files, read phases.json, create Issues",
-      "spec": "specs/SPEC-003-github-api.md",
-      "acceptance_criteria": "specs/AC-003-github-api.md",
-      "contracts": [
-        "specs/CONTRACT-api-endpoints.md"
+      "depends_on": ["p1"],
+      "acceptance_criteria": [
+        "AC-003: Команда /exec создаёт Issues через GitHub API",
+        "AC-005: Issues содержат labels sub-agent, phase, phase-id",
+        "AC-010: Настройка GitHub PAT → Проверка соединения → статус OK"
       ]
     },
     {
-      "id": "phase-004",
-      "title": "Dashboard — Phase Viewer",
+      "id": "p4",
+      "name": "Dashboard — Phase Viewer",
+      "description": "Read .build-loop/phases.json, render phase cards with status badges, links to SPECs and contracts",
       "status": "completed",
-      "description": "Read .build-loop/phases.json from repo, render phase cards with status",
-      "spec": "specs/SPEC-004-dashboard.md",
-      "acceptance_criteria": "specs/AC-004-dashboard.md",
-      "contracts": [
-        "specs/CONTRACT-dashboard-render.md"
+      "depends_on": ["p1", "p3"],
+      "acceptance_criteria": [
+        "AC-007: Дашборд читает phases.json и отображает карточки",
+        "AC-012: Каждая фаза имеет SPEC, AC и контракт"
       ]
     },
     {
-      "id": "phase-005",
-      "title": "Build Loop Workflow Integration",
+      "id": "p5",
+      "name": "Build Loop Workflow Integration",
+      "description": "Wire up /exec to create Issues, update phases.json status, handle decompose→sub-agent→Issues→execute cycle, tab navigation between panels",
       "status": "in-progress",
-      "description": "decompose → sub-agent delegation → Issues → execute-phase wire-up",
-      "spec": "specs/SPEC-005-workflow.md",
-      "acceptance_criteria": "specs/AC-005-workflow.md",
-      "contracts": [
-        "specs/CONTRACT-workflow-states.md"
+      "depends_on": ["p2", "p3", "p4"],
+      "acceptance_criteria": [
+        "AC-006: После /exec обновляется phases.json (статус → in-progress)",
+        "AC-003: Команда /exec создаёт Issues через GitHub API"
       ]
     },
     {
-      "id": "phase-006",
-      "title": "Validation & Acceptance Testing",
-      "status": "planned",
-      "description": "Manual UAT of the full CodeAI Build Loop against this PWA",
-      "spec": "specs/SPEC-006-validation.md",
-      "acceptance_criteria": "specs/AC-006-validation.md",
-      "contracts": []
+      "id": "p6",
+      "name": "Validation & Judge Evaluation",
+      "description": "Run llm-judge.py on each phase summary, verify AC coverage, acceptance testing of full workflow",
+      "status": "pending",
+      "depends_on": ["p5"],
+      "acceptance_criteria": [
+        "AC-001–AC-012: Все критерии приёмки пройдены"
+      ]
     }
   ]
 }
