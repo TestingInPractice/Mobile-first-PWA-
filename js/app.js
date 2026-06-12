@@ -4,6 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const panels = {
     chat: document.getElementById('chat-panel'),
     dashboard: document.getElementById('dashboard-panel'),
+    subagents: document.getElementById('subagents-panel'),
     settings: document.getElementById('settings-panel')
   };
 
@@ -13,6 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
       btn.classList.add('active');
       Object.keys(panels).forEach(k => panels[k].classList.toggle('active', k === btn.dataset.tab));
       if (btn.dataset.tab === 'dashboard') DASHBOARD.load();
+      if (btn.dataset.tab === 'subagents') SUBAGENTS.load();
     });
   });
 

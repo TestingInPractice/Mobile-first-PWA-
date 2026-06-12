@@ -19,6 +19,7 @@
     <nav class="tabs">
       <button class="tab-btn active" data-tab="chat">Чат</button>
       <button class="tab-btn" data-tab="dashboard">Фазы</button>
+      <button class="tab-btn" data-tab="subagents">🤖</button>
       <button class="tab-btn" data-tab="settings">⚙️</button>
     </nav>
   </header>
@@ -36,6 +37,11 @@
     <!-- Dashboard Panel -->
     <div id="dashboard-panel" class="panel">
       <div id="dashboard-content"></div>
+    </div>
+
+    <!-- SubAgents Panel -->
+    <div id="subagents-panel" class="panel">
+      <div id="subagents-content"></div>
     </div>
 
     <!-- Settings Panel -->
@@ -70,13 +76,15 @@
 
         <div style="margin-top:24px;padding:12px;background:var(--surface);border-radius:8px;font-size:12px;color:var(--text2)">
           <b>📋 CodeAI Build Loop — валидация</b><br><br>
+          <b>Pipeline:</b> decompose → sub-agent handoff → Issues → execute → judge<br><br>
           <b>Сценарий проверки:</b><br>
           1. Введи PAT → Проверить соединение<br>
           2. Напиши в чат: <code>/decompose "Сделать PWA для opencode"</code><br>
           3. Напиши: <code>/status</code><br>
-          4. Выбери фазу: <code>/exec phase-005</code><br>
-          5. Открой Фазы → убедись, что статус обновился<br>
-          6. Проверь GitHub Issues в репозитории
+          4. Выбери фазу: <code>/exec p5</code><br>
+          5. Открой 🤖 SubAgents → handoff + skills + pipeline<br>
+          6. Открой Фазы → убедись, что статус обновился<br>
+          7. Проверь GitHub Issues в репозитории
         </div>
       </div>
     </div>
@@ -85,6 +93,7 @@
   <script src="js/github.js"></script>
   <script src="js/chat.js"></script>
   <script src="js/dashboard.js"></script>
+  <script src="js/subagents.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>

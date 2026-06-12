@@ -38,27 +38,25 @@ const DASHBOARD = (() => {
         : phase.status === 'in-progress' ? '🔄 В работе'
         : '⏳ Запланировано';
 
+      const phaseName = phase.name || phase.title || '';
+      const specDoc = `docs/specs/SPEC-${phase.id}.md`;
+      const acDoc = `docs/specs/acceptance-criteria.md`;
+
       html += `
         <div class="phase-card ${statusClass}">
-          <h3>${escapeHtml(phase.id)}: ${escapeHtml(phase.title)}</h3>
+          <h3>${escapeHtml(phase.id)}: ${escapeHtml(phaseName)}</h3>
           <span class="status-badge">${statusLabel}</span>
           <p>${escapeHtml(phase.description || '')}</p>
-          <div class="specs">`;
-
-      const specLinks = [
-        { label: 'SPEC', path: phase.spec },
-        { label: 'AC', path: phase.acceptance_criteria },
-        ...(phase.contracts || []).map(c => ({ label: c.split('/').pop(), path: c }))
-      ];
-
-      for (const link of specLinks) {
-        if (link.path) {
-          const url = GITHUB.repoUrl(link.path);
-          html += `<a href="${url}" target="_blank" rel="noopener">${escapeHtml(link.label)}</a>`;
-        }
-      }
-
-      html += `</div></div>`;
+          <div class="specs">
+            <a href="${GITHUB.repoUrl(specDoc)}" target="_blank" rel="noopener">SPEC</a>
+            <a href="${GITHUB.repoUrl(acDoc)}" target="_blank" rel="noopener">AC</a>
+            ${(phase.depends_on || []).length ? phase.depends_on.map(d => `<a href="#" style="background:var(--surface2);color:var(--yellow)">⬅ ${escapeHtml(d)}</a>`).join('') : ''}
+          </div>
+          ${phase.acceptance_criteria && phase.acceptance_criteria.length ? `
+          <div style="margin-top:6px;font-size:11px;color:var(--text2)">
+            ${phase.acceptance_criteria.map(ac => `• ${escapeHtml(ac)}`).join('<br>')}
+          </div>` : ''}
+        </div>`;
     }
 
     container.innerHTML = html;

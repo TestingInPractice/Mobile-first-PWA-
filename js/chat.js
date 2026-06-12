@@ -102,7 +102,7 @@ const CHAT = (() => {
       let html = '<span class="cmd">📊 Статус фаз:</span><br><br>';
       for (const p of data.phases) {
         const emoji = p.status === 'completed' ? '✅' : p.status === 'in-progress' ? '🔄' : '⏳';
-        html += `${emoji} <b>${p.id}</b> — ${p.title} <span class="status-ok">(${p.status})</span><br>`;
+        html += `${emoji} <b>${p.id}</b> — ${escapeHtml(p.name || p.title)} <span class="status-ok">(${p.status})</span><br>`;
       }
       replaceLoading(loadingId, html);
     } catch (e) {
@@ -123,7 +123,7 @@ const CHAT = (() => {
     for (const st of subTasks) {
       html += `📌 ${escapeHtml(st)}<br>`;
     }
-    html += `<br><span class="status-ok">→ Используй /exec phase-XXX для создания Issues</span>`;
+    html += `<br><span class="status-ok">→ Используй /exec p1-p6 для запуска фазы</span>`;
     replaceLoading(loadingId, html);
   }
 
@@ -144,30 +144,73 @@ const CHAT = (() => {
         return;
       }
 
+      const skillName = phase.id.replace(/^p/, 'p') + '-' + (phase.name || '').toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+      const skillMapping = {
+        'p1': 'p1-pwa-skeleton',
+        'p2': 'p2-chat',
+        'p3': 'p3-github-api',
+        'p4': 'p4-dashboard',
+        'p5': 'p5-workflow',
+        'p6': 'p6-validation'
+      };
+      const skillRef = `.workflow/skills/${skillMapping[phaseId] || skillName}/SKILL.md`;
+
+      let result = `<span class="cmd">🚀 Sub-agent pipeline для ${phaseId}:</span> "${escapeHtml(phase.name)}"<br><br>`;
+
+      // Step 1: Create Issues (sub-agent delegation)
       const issues = [
-        { title: `[${phase.id}] SPEC: ${phase.title}`, body: `Создать SPEC по адресу ${phase.spec}` },
-        { title: `[${phase.id}] AC: ${phase.title}`, body: `Создать AC по адресу ${phase.acceptance_criteria}` },
-        { title: `[${phase.id}] Execute: ${phase.title}`, body: `Реализовать фазу согласно SPEC` }
+        { title: `[${phase.id}] SPEC: ${phase.name}`, body: `Создать SPEC для фазы ${phase.id}. Skill: ${skillRef}` },
+        { title: `[${phase.id}] AC: ${phase.name}`, body: `Создать Acceptance Criteria для фазы ${phase.id}` },
+        { title: `[${phase.id}] Execute: ${phase.name}`, body: `Реализовать фазу согласно SPEC. Judge: scripts/judge/llm-judge.py` }
       ];
 
-      let result = `<span class="cmd">🚀 Выполняю фазу ${phaseId}:</span> "${escapeHtml(phase.title)}"<br><br>`;
-
+      const issueNumbers = [];
       for (const iss of issues) {
         try {
           const created = await GITHUB.createIssue(iss.title, iss.body, ['sub-agent', 'phase', phaseId]);
+          issueNumbers.push(created.number);
           result += `<span class="status-ok">✅</span> Issue #${created.number}: ${escapeHtml(iss.title)}<br>`;
         } catch (e) {
           result += `<span class="status-err">❌</span> ${escapeHtml(iss.title)}: ${escapeHtml(e.message)}<br>`;
         }
       }
 
+      // Step 2: Write subagent-handoff.json
+      try {
+        const handoff = {
+          phase: { id: phase.id, name: phase.name, status: 'in-progress' },
+          skill_ref: skillRef,
+          spec_paths: [
+            'docs/specs/goals.md',
+            `docs/specs/SPEC-${phase.id}.md`,
+            'docs/specs/acceptance-criteria.md',
+            'docs/specs/contracts/api.md',
+            'docs/specs/contracts/data-models.md'
+          ],
+          judge_verdict: null,
+          judge_score: null,
+          status: null,
+          summary: null,
+          evidence: [],
+          open_questions: [],
+          issue_numbers: issueNumbers
+        };
+        await GITHUB.createFile('.workflow/subagent-handoff.json', JSON.stringify(handoff, null, 2), `chore: sub-agent handoff for ${phase.id}`);
+        result += `<span class="status-ok">✅</span> .workflow/subagent-handoff.json — handoff создан<br>`;
+      } catch (e) {
+        result += `<span class="status-err">❌</span> handoff: ${escapeHtml(e.message)}<br>`;
+      }
+
+      // Step 3: Update phases.json
       const updated = await GITHUB.updatePhasesJson(phases => {
         const p = phases.phases.find(x => x.id === phaseId);
         if (p && p.status !== 'completed') p.status = 'in-progress';
         return phases;
       });
 
-      result += `<br><span class="status-ok">✅ phases.json обновлён: ${phaseId} → in-progress</span>`;
+      result += `<span class="status-ok">✅</span> phases.json обновлён: ${phaseId} → in-progress<br><br>`;
+      result += `<span class="cmd">🔁 Pipeline:</span> decompose → <b>handoff</b> → Issues → execute → judge<br>`;
+      result += `Открой 🤖 <b>SubAgents</b> чтобы увидеть handoff и skill`;
       replaceLoading(loadingId, result);
     } catch (e) {
       replaceLoading(loadingId, `<span class="status-err">Ошибка: ${escapeHtml(e.message)}</span>`);

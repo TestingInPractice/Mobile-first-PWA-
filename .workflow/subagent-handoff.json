@@ -2,15 +2,20 @@
   "phase": {
     "id": "p5",
     "name": "Build Loop Workflow Integration",
-    "status": "pending"
+    "status": "in-progress"
   },
-  "skill_ref": "skills/workflow-core/SKILL.md",
+  "skill_ref": ".workflow/skills/p5-workflow/SKILL.md",
   "spec_paths": [
     "docs/specs/goals.md",
+    "docs/specs/SPEC-p5-workflow.md",
     "docs/specs/acceptance-criteria.md",
     "docs/specs/contracts/api.md",
     "docs/specs/contracts/data-models.md"
   ],
   "judge_verdict": null,
-  "verdict_reason": null
+  "judge_score": null,
+  "status": null,
+  "summary": null,
+  "evidence": [],
+  "open_questions": []
 }

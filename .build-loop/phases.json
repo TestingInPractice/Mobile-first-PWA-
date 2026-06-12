@@ -1,4 +1,11 @@
 {
+  "meta": {
+    "project": "Mobile-first-PWA",
+    "version": "0.1.0",
+    "loop_version": "1.0.0",
+    "updated": "2026-06-12T14:00:00Z",
+    "orchestrator": "CodeAI Build Loop"
+  },
   "phases": [
     {
       "id": "p1",

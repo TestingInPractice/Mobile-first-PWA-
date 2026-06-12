@@ -7,6 +7,7 @@ const PRECACHE = [
   '/Mobile-first-PWA-/js/github.js',
   '/Mobile-first-PWA-/js/chat.js',
   '/Mobile-first-PWA-/js/dashboard.js',
+  '/Mobile-first-PWA-/js/subagents.js',
   '/Mobile-first-PWA-/manifest.json',
   '/Mobile-first-PWA-/icon-192.svg',
   '/Mobile-first-PWA-/icon-512.svg',
