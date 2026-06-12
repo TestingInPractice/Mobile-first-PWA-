@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="OCPWA">
+  <meta name="mobile-web-app-capable" content="yes">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧠</text></svg>">
+  <title>opencode · CodeAI Build Loop</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <header>
+    <h1><span>oc</span>pwa</h1>
+    <nav class="tabs">
+      <button class="tab-btn active" data-tab="chat">Чат</button>
+      <button class="tab-btn" data-tab="dashboard">Фазы</button>
+      <button class="tab-btn" data-tab="settings">⚙️</button>
+    </nav>
+  </header>
+
+  <main>
+    <!-- Chat Panel -->
+    <div id="chat-panel" class="panel active">
+      <div id="chat-messages"></div>
+      <div id="chat-input-area">
+        <input type="text" id="chat-input" placeholder="Prompt или команда (/help)" autocomplete="off" autocorrect="off" autocapitalize="off">
+        <button id="chat-send" aria-label="Отправить">➤</button>
+      </div>
+    </div>
+
+    <!-- Dashboard Panel -->
+    <div id="dashboard-panel" class="panel">
+      <div id="dashboard-content"></div>
+    </div>
+
+    <!-- Settings Panel -->
+    <div id="settings-panel" class="panel">
+      <div id="settings-content">
+        <h3 style="margin-bottom:12px">Настройки GitHub API</h3>
+
+        <label for="token-input">Personal Access Token (PAT)</label>
+        <input type="password" id="token-input" placeholder="github_pat_...">
+        <div class="hint">Fine-grained token с правами: contents:write, issues:write</div>
+
+        <label for="owner-input">Owner</label>
+        <input type="text" id="owner-input" placeholder="TestingInPractice">
+
+        <label for="repo-input">Repository</label>
+        <input type="text" id="repo-input" placeholder="Mobile-first-PWA-">
+
+        <div id="token-status" style="font-size:13px;color:var(--text2);margin-bottom:12px">Статус: не проверено</div>
+
+        <button id="test-connection" style="
+          width:100%;
+          padding:12px;
+          background:var(--accent);
+          color:#fff;
+          border:none;
+          border-radius:8px;
+          font-size:15px;
+          font-weight:600;
+          cursor:pointer;
+          -webkit-tap-highlight-color:transparent;
+        ">Проверить соединение</button>
+
+        <div style="margin-top:24px;padding:12px;background:var(--surface);border-radius:8px;font-size:12px;color:var(--text2)">
+          <b>📋 CodeAI Build Loop — валидация</b><br><br>
+          <b>Сценарий проверки:</b><br>
+          1. Введи PAT → Проверить соединение<br>
+          2. Напиши в чат: <code>/decompose "Сделать PWA для opencode"</code><br>
+          3. Напиши: <code>/status</code><br>
+          4. Выбери фазу: <code>/exec phase-005</code><br>
+          5. Открой Фазы → убедись, что статус обновился<br>
+          6. Проверь GitHub Issues в репозитории
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="js/github.js"></script>
+  <script src="js/chat.js"></script>
+  <script src="js/dashboard.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

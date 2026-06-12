@@ -1,0 +1,77 @@
+{
+  "$schema": "phases-schema.json",
+  "meta": {
+    "project": "Mobile-first-PWA",
+    "version": "0.1.0",
+    "loop_version": "1.0.0",
+    "updated": "2026-06-12T14:00:00Z",
+    "orchestrator": "CodeAI Build Loop v1"
+  },
+  "phases": [
+    {
+      "id": "phase-001",
+      "title": "PWA Skeleton & Manifest",
+      "status": "completed",
+      "description": "Service worker, manifest.json, offline fallback, iOS meta tags",
+      "spec": "specs/SPEC-001-pwa-skeleton.md",
+      "acceptance_criteria": "specs/AC-001-pwa-skeleton.md",
+      "contracts": [
+        "specs/CONTRACT-sw-interface.md",
+        "specs/CONTRACT-manifest-props.md"
+      ]
+    },
+    {
+      "id": "phase-002",
+      "title": "Chat Interface (Planning Mode)",
+      "status": "completed",
+      "description": "Text chat UI, command parser, prompt/response loop for planning",
+      "spec": "specs/SPEC-002-chat.md",
+      "acceptance_criteria": "specs/AC-002-chat.md",
+      "contracts": [
+        "specs/CONTRACT-chat-commands.md"
+      ]
+    },
+    {
+      "id": "phase-003",
+      "title": "GitHub REST API v3 Integration",
+      "status": "completed",
+      "description": "Auth via PAT, create .md files, read phases.json, create Issues",
+      "spec": "specs/SPEC-003-github-api.md",
+      "acceptance_criteria": "specs/AC-003-github-api.md",
+      "contracts": [
+        "specs/CONTRACT-api-endpoints.md"
+      ]
+    },
+    {
+      "id": "phase-004",
+      "title": "Dashboard — Phase Viewer",
+      "status": "completed",
+      "description": "Read .build-loop/phases.json from repo, render phase cards with status",
+      "spec": "specs/SPEC-004-dashboard.md",
+      "acceptance_criteria": "specs/AC-004-dashboard.md",
+      "contracts": [
+        "specs/CONTRACT-dashboard-render.md"
+      ]
+    },
+    {
+      "id": "phase-005",
+      "title": "Build Loop Workflow Integration",
+      "status": "in-progress",
+      "description": "decompose → sub-agent delegation → Issues → execute-phase wire-up",
+      "spec": "specs/SPEC-005-workflow.md",
+      "acceptance_criteria": "specs/AC-005-workflow.md",
+      "contracts": [
+        "specs/CONTRACT-workflow-states.md"
+      ]
+    },
+    {
+      "id": "phase-006",
+      "title": "Validation & Acceptance Testing",
+      "status": "planned",
+      "description": "Manual UAT of the full CodeAI Build Loop against this PWA",
+      "spec": "specs/SPEC-006-validation.md",
+      "acceptance_criteria": "specs/AC-006-validation.md",
+      "contracts": []
+    }
+  ]
+}
